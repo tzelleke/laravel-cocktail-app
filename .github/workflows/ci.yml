@@ -1,0 +1,79 @@
+name: CI
+
+on: [push]
+
+env:
+  NODE_VERSION: 20
+  PHP_VERSION: 8.2
+
+jobs:
+  lint_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: php-cs-fixer, phpstan, phpunit
+
+      - uses: actions/checkout@v3
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/composer/files
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-interaction
+
+      - name: PHP CS Fixer
+        run: |
+          php-cs-fixer fix \
+          --config=.php-cs-fixer.dist.php \
+          --verbose \
+          --dry-run \
+          --using-cache=no
+
+      - name: Cache PHPStan results
+        uses: actions/cache@v3
+        with:
+          path: /tmp/phpstan
+          key: cache-phpstan
+
+      - name: PHPStan
+        run: |
+          phpstan analyze -c phpstan.neon.dist
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+      
+      - name: Install Node dependencies
+        run: |
+          npm ci
+
+      - name: Run ESLint
+        run: |
+          npx eslint resources/js
+
+      - name: Run Prettier
+        run: |
+          npx prettier --check resources
+
+      - name: Build frontend assets
+        run: |
+          npm run build
+
+      - name: Prepare Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: PHPUnit
+        run: |
+          php artisan test --coverage

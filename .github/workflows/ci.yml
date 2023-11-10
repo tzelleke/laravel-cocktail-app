@@ -76,4 +76,5 @@ jobs:
 
       - name: PHPUnit
         run: |
+          touch database/testing.sqlite
           php artisan test --coverage

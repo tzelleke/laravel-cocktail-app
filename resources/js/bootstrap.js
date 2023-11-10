@@ -5,8 +5,10 @@
  */
 
 import axios from 'axios';
-window.axios = axios;
 
+// eslint-disable-next-line no-undef
+window.axios = axios;
+// eslint-disable-next-line no-undef
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**

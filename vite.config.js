@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
+// eslint-disable-next-line import/no-unresolved
 import laravel from 'laravel-vite-plugin';
 
 export default defineConfig({

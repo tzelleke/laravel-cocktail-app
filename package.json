@@ -3,11 +3,31 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "format": "prettier --write \"./resources/**/*.{js,css}\""
     },
     "devDependencies": {
         "axios": "^1.1.2",
+        "eslint": "^8.53.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-prettier": "^5.0.1",
         "laravel-vite-plugin": "^0.8.0",
+        "prettier": "^3.0.3",
         "vite": "^4.0.0"
+    },
+    "prettier": {
+        "bracketSpacing": false,
+        "singleQuote": true,
+        "printWidth": 80,
+        "overrides": [
+            {
+                "files": "*.js",
+                "options": {
+                    "tabWidth": 4
+                }
+            }
+        ]
     }
 }

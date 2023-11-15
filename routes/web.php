@@ -28,4 +28,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+
+Route::middleware('auth')
+    ->prefix('/bs')
+    ->name('bs.')
+    ->group(function () {
+        Route::view('/', 'bs.dashboard')
+            ->middleware('verified')
+            ->name('dashboard');
+
+        Route::prefix('/profile')
+            ->name('profile.')
+            ->group(function () {
+                Route::get('/', [ProfileController::class, 'edit'])
+                    ->name('edit');
+                Route::patch('/', [ProfileController::class, 'update'])
+                    ->name('update');
+                Route::delete('/', [ProfileController::class, 'destroy'])
+                    ->name('destroy');
+            });
+    });
